@@ -121,14 +121,29 @@ class CounterScreen extends StatefulWidget {
 }
 
 class _CounterScreenState extends State<CounterScreen> {
-  int counter = 0;
-  double getPercent() {
-    return (counter % 100) / 100.0;
+
+  int value = 0; // initial value
+  double percentage = 0.5; // initial percentage for progress (50%)
+  Color color = Colors.blue; // initial color
+
+  void increment() {
+    setState(() {
+      if (value < 100) {
+        value += 10;
+        percentage = value / 100;
+        color = Colors.green;
+      }
+    });
   }
-  Color getCircleColor() {
-    if (counter > 0) return Colors.green;
-    if (counter < 0) return Colors.red;
-    return Colors.grey;
+
+  void decrement() {
+    setState(() {
+      if (value > 0) {
+        value -= 10;
+        percentage = value / 100;
+        color = Colors.blue;
+      }
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -173,7 +188,7 @@ class _CounterScreenState extends State<CounterScreen> {
                                           color: Colors.white),
                                     )),
                                 SizedBox(
-                                  width: 80,
+                                  width: 90,
                                 ),
                                 ElevatedButton(
                                     onPressed: () {
@@ -218,64 +233,73 @@ class _CounterScreenState extends State<CounterScreen> {
                   ),
                   color: Colors.white,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: CircularPercentIndicator(
-                       restartAnimation: true,
-                        animation: true,
-                        animationDuration: 1000,
-                        radius: 80,
-                        lineWidth: 20,
-                        percent: getPercent().abs(), // Use the calculated percentage
-                        progressColor: getCircleColor(),
-                        backgroundColor: Colors.grey,
-                        circularStrokeCap: CircularStrokeCap.round,
-                        center: Text(
-                          '$counter',
-                          style: TextStyle(fontSize: 30, color: Colors.black54),
+                child: Center(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Circular progress for dial
+                      SizedBox(
+                        width: 180,
+                        height: 180,
+                        child: CircularProgressIndicator(
+                          value: percentage,
+                          strokeWidth: 8,
+                          valueColor: AlwaysStoppedAnimation(color),
+                          backgroundColor: Colors.grey[700],
                         ),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    // Increment and Decrement buttons
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              counter--;
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
-                            backgroundColor: Colors.red,
-                            shape: CircleBorder(),
-                          ),
-                          child:
-                              Icon(Icons.remove, size: 30, color: Colors.white),
+                      // Value in the center
+                      Positioned(
+                        bottom: 80,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '$value',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Wh',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 20),
-                        ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              counter++;
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
-                            backgroundColor: Colors.green,
-                            shape: CircleBorder(),
-                          ),
-                          child: Icon(Icons.add, size: 30, color: Colors.white),
+                      ),
+                      // Increment and decrement buttons
+                      Positioned(
+                        bottom: 30,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              onPressed: decrement,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey[800],
+                                shape: CircleBorder(),
+                              ),
+                              child: Icon(Icons.remove, color: Colors.white),
+                            ),
+                            SizedBox(width: 20),
+                            ElevatedButton(
+                              onPressed: increment,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey[800],
+                                shape: CircleBorder(),
+                              ),
+                              child: Icon(Icons.add, color: Colors.white),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Row(children: [
