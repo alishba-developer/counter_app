@@ -37,8 +37,12 @@ dependencies:
   cupertino_icons: ^1.0.6
   introduction_screen: ^3.1.14
   image_picker: ^1.1.2
+  carousel_slider: ^5.0.0
+  syncfusion_flutter_gauges: ^27.1.58
+  percent_indicator: ^4.2.3
 
 dev_dependencies:
+  flutter_launcher_icons: "^0.14.1"
   flutter_test:
     sdk: flutter
 
